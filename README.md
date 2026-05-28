@@ -16,9 +16,13 @@ predictive performance, but also by calibration, interpretability and risk segme
 
 ## 3. Data
 
-The project uses:
-- Policy-level data with exposure, claim counts and risk features
-- Claim-level severity data with individual claim amounts
+The project uses two datasets comprised of:
+- Policy-level data with exposure, claim counts and risk features of 677,991 motor third-part liability policies 
+(observed mostly on one year)
+- Claim-level severity data with individual claim amounts for 26,639 motor third-part liability policies
+
+The datasets are fetched from openml.
+For more info see https://github.com/dutangc/CASdatasets
 
 ## 4. Methodology
 
