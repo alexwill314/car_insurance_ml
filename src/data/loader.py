@@ -1,0 +1,65 @@
+import os
+import pandas as pd
+
+
+REQUIRED_FREQ_COLS = {"IDpol", "ClaimNb", "Exposure", "VehGas"}
+REQUIRED_SEV_COLS = {"IDpol", "ClaimAmount"}
+
+FILE_PAIRS = {
+    "frequency": "freMTPL2freq.csv",
+    "severity": "freMTPL2sev.csv",
+}
+
+
+def _resolve_csv_path(data_dir: str, filename: str) -> str:
+    if os.path.isabs(filename):
+        return filename
+    return os.path.join(data_dir, filename)
+
+
+def load_raw_data(data_dir: str = "data"):
+    freq_path = _resolve_csv_path(data_dir, FILE_PAIRS["frequency"])
+    sev_path = _resolve_csv_path(data_dir, FILE_PAIRS["severity"])
+
+    freq_df = pd.read_csv(freq_path)
+    sev_df = pd.read_csv(sev_path)
+
+    if freq_df.empty or sev_df.empty:
+        raise ValueError("Loaded dataset is empty")
+
+    missing_freq = REQUIRED_FREQ_COLS.difference(freq_df.columns)
+    missing_sev = REQUIRED_SEV_COLS.difference(sev_df.columns)
+    if missing_freq:
+        raise ValueError(
+            f"Frequency dataset missing required columns: {sorted(missing_freq)}"
+        )
+    if missing_sev:
+        raise ValueError(
+            f"Severity dataset missing required columns: {sorted(missing_sev)}"
+        )
+
+    if not pd.api.types.is_numeric_dtype(freq_df["ClaimNb"]):
+        raise ValueError("ClaimNb must be numeric")
+    if not pd.api.types.is_numeric_dtype(freq_df["Exposure"]):
+        raise ValueError("Exposure must be numeric")
+    if not pd.api.types.is_numeric_dtype(sev_df["ClaimAmount"]):
+        raise ValueError("ClaimAmount must be numeric")
+
+    return freq_df, sev_df
+
+
+def preprocess_data(freq_df, sev_df):
+    freq_df = freq_df.copy()
+    sev_df = sev_df.copy()
+
+    sev_agg = sev_df.groupby("IDpol", as_index=False)["ClaimAmount"].sum()
+
+    df = freq_df.merge(sev_agg, on="IDpol", how="left")
+    df["ClaimAmount"] = df["ClaimAmount"].fillna(0.0)
+
+    object_cols = df.select_dtypes(include=["object"]).columns.tolist()
+    for col in object_cols:
+        df[col] = df[col].str.strip("'")
+        df[col] = df[col].astype("category")
+
+    return df
