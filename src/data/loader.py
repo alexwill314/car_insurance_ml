@@ -49,19 +49,3 @@ def load_raw_data(data_dir : str | Path | None = None):
 
     return freq_df, sev_df
 
-
-def preprocess_data(freq_df, sev_df):
-    freq_df = freq_df.copy()
-    sev_df = sev_df.copy()
-
-    sev_agg = sev_df.groupby("IDpol", as_index=False)["ClaimAmount"].sum()
-
-    df = freq_df.merge(sev_agg, on="IDpol", how="left")
-    df["ClaimAmount"] = df["ClaimAmount"].fillna(0.0)
-
-    object_cols = df.select_dtypes(include=["object"]).columns.tolist()
-    for col in object_cols:
-        df[col] = df[col].str.strip("'")
-        df[col] = df[col].astype("category")
-
-    return df
