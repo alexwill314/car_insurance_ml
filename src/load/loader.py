@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from src.config import DATA_DIR
 import pandas as pd
@@ -13,17 +12,16 @@ FILE_PAIRS = {
 }
 
 
-def _resolve_csv_path(data_dir: str, filename: str) -> str:
-    if os.path.isabs(filename):
-        return filename
-    return os.path.join(data_dir, filename)
-
-
 def load_raw_data(data_dir : str | Path | None = None):
     data_dir = DATA_DIR if data_dir is None else Path(data_dir)
 
-    freq_path = _resolve_csv_path(data_dir, FILE_PAIRS["frequency"])
-    sev_path = _resolve_csv_path(data_dir, FILE_PAIRS["severity"])
+    freq_path = data_dir / FILE_PAIRS["frequency"]
+    sev_path = data_dir / FILE_PAIRS["severity"]
+
+    if not freq_path.exists():
+        raise FileNotFoundError(f"Frequency data file not found: {freq_path}")
+    if not sev_path.exists():
+        raise FileNotFoundError(f"Severity data file not found: {sev_path}")
 
     freq_df = pd.read_csv(freq_path)
     sev_df = pd.read_csv(sev_path)
