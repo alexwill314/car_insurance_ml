@@ -30,7 +30,7 @@ Create a first working end-to-end version of a car insurance pricing data scienc
 
 ---
 
-## 3. Design Decisions Resolved (via `/grill-me`)
+## 3. Design Decisions Resolved
 1. **Dataset Location**: Data is fetched from OpenML and stored locally in a git-ignored `data/` directory using a script (`src/data/download_data.py`).
 2. **Directory Structure**: 3-part clean layout:
    - `src/data/` for data retrieval, loading, and validation.
