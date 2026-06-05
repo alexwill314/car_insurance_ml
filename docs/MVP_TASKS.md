@@ -77,7 +77,7 @@ This document contains step-by-step implementation tasks for Kilo to build the c
 - **Suggested checks**:
   - Open a python terminal and run:
     ```python
-    from src.data.loader import load_raw_data, preprocess_data
+    from src.load.loader import load_raw_data, preprocess_data
     freq, sev = load_raw_data("data")
     df = preprocess_data(freq, sev)
     print(df.shape, df["ClaimAmount"].isnull().sum())
@@ -94,7 +94,7 @@ This document contains step-by-step implementation tasks for Kilo to build the c
   1. Modify `notebooks/01_EDA.ipynb` to import and use the data loader functions from `src.data.loader`.
   2. Replace inline data downloading with:
      ```python
-     from src.data.loader import load_raw_data, preprocess_data
+     from src.load.loader import load_raw_data, preprocess_data
      freq, sev = load_raw_data("../data")
      df = preprocess_data(freq, sev)
      ```

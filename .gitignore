@@ -16,5 +16,5 @@ venv/
 # OS
 .DS_Store
 
-# data
+# load
 /data/

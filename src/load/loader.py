@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+from src.config import DATA_DIR
 import pandas as pd
 
 
@@ -17,7 +19,9 @@ def _resolve_csv_path(data_dir: str, filename: str) -> str:
     return os.path.join(data_dir, filename)
 
 
-def load_raw_data(data_dir: str = "data"):
+def load_raw_data(data_dir : str | Path | None = None):
+    data_dir = DATA_DIR if data_dir is None else Path(data_dir)
+
     freq_path = _resolve_csv_path(data_dir, FILE_PAIRS["frequency"])
     sev_path = _resolve_csv_path(data_dir, FILE_PAIRS["severity"])
 

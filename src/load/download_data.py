@@ -1,10 +1,10 @@
+from src.config import DATA_DIR
 from sklearn.datasets import fetch_openml
 import os
 
 
 def download_data():
-    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data")
-    data_dir = os.path.abspath(data_dir)
+    data_dir = DATA_DIR
     os.makedirs(data_dir, exist_ok=True)
 
     print("Downloading frequency dataset (OpenML ID 41214)...")
