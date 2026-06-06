@@ -18,12 +18,11 @@ def preprocess_raw_data(freq_df: pd.DataFrame, sev_df: pd.DataFrame):
     return df
 
 
-def preprocess_data_model(df:pd.DataFrame):
+def preprocess_data_model(df: pd.DataFrame):
     df = df.copy()
-    df["Frequency"] = df["ClaimNb"] / df["Exposure"]
-    df["Frequency"] = df["Frequency"].clip(upper=20)
     df["ClaimNb"] = df["ClaimNb"].clip(upper=4)
     df["Exposure"] = df["Exposure"].clip(upper=1.1)
     df.loc[(df["ClaimNb"] > 0) & (df["ClaimAmount"] == 0), "ClaimNb"] = 0
+    df["Frequency"] = df["ClaimNb"] / df["Exposure"]
 
     return df

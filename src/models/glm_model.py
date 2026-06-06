@@ -5,8 +5,6 @@ import pandas as pd
 import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 
-import matplotlib.pyplot as plt
-
 from src.data.loader import load_raw_data
 from src.data.preprocessing import preprocess_raw_data, preprocess_data_model
 
@@ -20,7 +18,7 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
     df = preprocess_data_model(df)
 
     X = pd.get_dummies(df[features],dtype=float)
-    y = df["Frequency"].astype(float)
+    y = df["ClaimNb"].astype(float)
     exposure = df["Exposure"].astype(float)
 
     X_train, X_test, y_train, y_test, exposure_train, exposure_test = train_test_split(
@@ -37,7 +35,7 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
         exposure=exposure_train,
     )
     result = model.fit()
-    y_pred_freq = result.predict(X_test) / exposure_test
+    y_pred_freq = result.predict(X_test, exposure=exposure_test) / exposure_test
     y_test_freq = y_test / exposure_test
 
     return result, y_test_freq, y_pred_freq, exposure_test
@@ -45,5 +43,3 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
 
 if __name__ == "__main__":
     result, y_test_freq, y_pred_freq, exposure_test = train_glm_baseline()
-    plt.scatter(y_pred_freq,y_test_freq)
-    plt.show()
