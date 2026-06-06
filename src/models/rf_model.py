@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from src.config import DATA_DIR, features
 from src.data.loader import load_raw_data
-from src.data.preprocessing import preprocess_data
+from src.data.preprocessing import preprocess_raw_data
 
 
 def train_random_forest(data_dir=None,
@@ -16,7 +16,7 @@ def train_random_forest(data_dir=None,
     if data_dir is None:
         data_dir = str(DATA_DIR)
     freq_df, sev_df = load_raw_data(data_dir)
-    df = preprocess_data(freq_df, sev_df)
+    df = preprocess_raw_data(freq_df, sev_df)
 
     X = pd.get_dummies(df[features])
     y = df["ClaimNb"] / df["Exposure"]
@@ -42,11 +42,11 @@ def train_random_forest(data_dir=None,
 
     y_pred = model.predict(X_test)
 
-    return model, y_pred, y_test
+    return model, y_test, y_pred
 
 
 if __name__ == "__main__":
-    model, y_pred, y_test = train_random_forest()
+    model, y_test, y_pred = train_random_forest()
     print("Random Forest trained successfully")
-    print(f"Test actual sample: {y_test[:5].values}")
-    print(f"Test predictions sample: {y_pred[:5]}")
+    print(f"Test actual sample (frequency): {y_test[:5].values}")
+    print(f"Test predictions sample (frequency): {y_pred[:5]}")

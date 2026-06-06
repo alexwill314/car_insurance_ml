@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def preprocess_data(freq_df: pd.DataFrame, sev_df: pd.DataFrame):
+def preprocess_raw_data(freq_df: pd.DataFrame, sev_df: pd.DataFrame):
     freq_df = freq_df.copy()
     sev_df = sev_df.copy()
 
@@ -16,3 +16,7 @@ def preprocess_data(freq_df: pd.DataFrame, sev_df: pd.DataFrame):
         df[col] = df[col].astype("category")
 
     return df
+
+
+def preprocess_data_model(df:pd.DataFrame):
+    df = df.copy()
