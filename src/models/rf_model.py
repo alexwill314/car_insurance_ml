@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from src.config import DATA_DIR, features
 from src.data.loader import load_raw_data
-from src.data.preprocessing import preprocess_raw_data
+from src.data.preprocessing import preprocess_raw_data, preprocess_data_model
 
 
 def train_random_forest(data_dir=None,
@@ -17,7 +17,7 @@ def train_random_forest(data_dir=None,
         data_dir = str(DATA_DIR)
     freq_df, sev_df = load_raw_data(data_dir)
     df = preprocess_raw_data(freq_df, sev_df)
-
+    df = preprocess_data_model(df)
     X = pd.get_dummies(df[features])
     y = df["ClaimNb"] / df["Exposure"]
     w = df["Exposure"]
