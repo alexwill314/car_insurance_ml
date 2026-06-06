@@ -42,11 +42,11 @@ def train_random_forest(data_dir=None,
 
     y_pred = model.predict(X_test)
 
-    return model, y_test, y_pred
+    return model, y_test, y_pred, w_test
 
 
 if __name__ == "__main__":
-    model, y_test, y_pred = train_random_forest()
+    model, y_test, y_pred, w = train_random_forest()
     print("Random Forest trained successfully")
     print(f"Test actual sample (frequency): {y_test[:5].values}")
     print(f"Test predictions sample (frequency): {y_pred[:5]}")

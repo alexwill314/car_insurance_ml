@@ -38,11 +38,11 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
     y_pred = result.predict(X_test)
     y_test_freq = y_test / np.exp(offset_test)
 
-    return result, y_test_freq, y_pred
+    return result, y_test_freq, y_pred, offset_test
 
 
 if __name__ == "__main__":
-    result, y_test, y_pred = train_glm_baseline()
+    result, y_test, y_pred, offset = train_glm_baseline()
     print("Poisson GLM trained successfully")
     print(f"Test actual sample (frequency): {y_test[:5].values}")
     print(f"Test predictions sample (frequency): {y_pred[:5].values}")

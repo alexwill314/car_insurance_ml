@@ -23,3 +23,5 @@ def preprocess_data_model(df:pd.DataFrame):
     df["ClaimNb"] = df["ClaimNb"].clip(upper=4)
     df["Exposure"] = df["Exposure"].clip(upper=1.1)
     df.loc[(df["ClaimNb"] > 0) & (df["ClaimAmount"] == 0), "ClaimNb"] = 0
+
+    return df
