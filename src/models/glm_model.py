@@ -5,6 +5,8 @@ import pandas as pd
 import statsmodels.api as sm
 from sklearn.model_selection import train_test_split
 
+import matplotlib.pyplot as plt
+
 from src.data.loader import load_raw_data
 from src.data.preprocessing import preprocess_raw_data, preprocess_data_model
 
@@ -18,11 +20,11 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
     df = preprocess_data_model(df)
 
     X = pd.get_dummies(df[features],dtype=float)
-    y = df["ClaimNb"].astype(float)
-    offset = np.log(df["Exposure"].astype(float))
+    y = df["Frequency"].astype(float)
+    exposure = df["Exposure"].astype(float)
 
-    X_train, X_test, y_train, y_test, offset_train, offset_test = train_test_split(
-        X, y, offset, test_size=test_size, random_state=random_state
+    X_train, X_test, y_train, y_test, exposure_train, exposure_test = train_test_split(
+        X, y, exposure, test_size=test_size, random_state=random_state
     )
 
     X_train = sm.add_constant(X_train, has_constant="add")
@@ -32,17 +34,16 @@ def train_glm_baseline(data_dir : str | Path | None = None, test_size: float = 0
         y_train,
         X_train,
         family=sm.families.Poisson(),
-        offset=offset_train,
+        exposure=exposure_train,
     )
     result = model.fit()
-    y_pred = result.predict(X_test)
-    y_test_freq = y_test / np.exp(offset_test)
+    y_pred_freq = result.predict(X_test) / exposure_test
+    y_test_freq = y_test / exposure_test
 
-    return result, y_test_freq, y_pred, offset_test
+    return result, y_test_freq, y_pred_freq, exposure_test
 
 
 if __name__ == "__main__":
-    result, y_test, y_pred, offset = train_glm_baseline()
-    print("Poisson GLM trained successfully")
-    print(f"Test actual sample (frequency): {y_test[:5].values}")
-    print(f"Test predictions sample (frequency): {y_pred[:5].values}")
+    result, y_test_freq, y_pred_freq, exposure_test = train_glm_baseline()
+    plt.scatter(y_pred_freq,y_test_freq)
+    plt.show()

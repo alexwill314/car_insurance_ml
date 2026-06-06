@@ -6,6 +6,7 @@ from src.config import DATA_DIR, features
 from src.data.loader import load_raw_data
 from src.data.preprocessing import preprocess_raw_data, preprocess_data_model
 
+import matplotlib.pyplot as plt
 
 def train_random_forest(data_dir=None,
                         test_size=0.2,
@@ -19,7 +20,7 @@ def train_random_forest(data_dir=None,
     df = preprocess_raw_data(freq_df, sev_df)
     df = preprocess_data_model(df)
     X = pd.get_dummies(df[features])
-    y = df["ClaimNb"] / df["Exposure"]
+    y = df["Frequency"]
     w = df["Exposure"]
 
     X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(
@@ -47,6 +48,5 @@ def train_random_forest(data_dir=None,
 
 if __name__ == "__main__":
     model, y_test, y_pred, w = train_random_forest()
-    print("Random Forest trained successfully")
-    print(f"Test actual sample (frequency): {y_test[:5].values}")
-    print(f"Test predictions sample (frequency): {y_pred[:5]}")
+    plt.scatter(y_pred, y_test)
+    plt.show()

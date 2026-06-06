@@ -6,7 +6,7 @@ from src.models.rf_model import train_random_forest
 
 def evaluate_predictions(y_true: pd.Series, y_pred: pd.Series | list, exposure: float) -> tuple[float, float]:
     """
-    Calculates Mean Squared Error (MSE) and R-squared (R^2) for the predictions.
+    Calculates Mean Squared Error (MSE) and Deviance (D^2) for the predictions.
     """
     mse = mean_squared_error(y_true, y_pred)
     d2 = d2_tweedie_score(y_true, y_pred, sample_weight = exposure, power = 1)
