@@ -48,7 +48,7 @@ def plot_calibration(y_true_freq: pd.Series, y_pred_freq: pd.Series, exposure: f
     grouped["y_pred"] = grouped["y_pred_x_exposure"] / grouped["exposure"]
 
     plt.figure()
-    plt.scatter(grouped["y_true"], grouped["y_pred"])
+    plt.scatter(grouped["y_true"], grouped["y_pred"],alpha=0.9)
     min_val = min(grouped["y_true"].min(), grouped["y_pred"].min())
     max_val = min(grouped["y_true"].max(), grouped["y_pred"].max())
     plt.plot([min_val, max_val], [min_val, max_val], color="black", linestyle="--")
@@ -104,13 +104,15 @@ def plot_lift(
         grouped["bin"],
         grouped["lift_true"],
         marker="o",
-        label="Observed lift"
+        label="Observed lift",
+        alpha=0.8
     )
     plt.plot(
         grouped["bin"],
         grouped["lift_pred"],
         marker="o",
-        label="Predicted lift"
+        label="Predicted lift",
+        alpha=0.8
     )
     plt.axhline(1.0, linestyle="--")
 
@@ -136,10 +138,10 @@ def main():
     print("\n### Model Evaluation Results")
     print(comparison_table)
 
-    plot_calibration(glm_y_test, glm_y_pred, glm_exp, n_bins=50, title="Calibration Plot GLM Model")
-    plot_calibration(rf_y_test, rf_y_pred, rf_exp, n_bins=50, title="Calibration Plot RF Model")
-    plot_lift(glm_y_test, glm_y_pred, glm_exp, n_bins=50, title="Lift Chart GLM Model")
-    plot_lift(rf_y_test, rf_y_pred, rf_exp, n_bins=50, title="Lift Chart RF Model")
+    plot_calibration(glm_y_test, glm_y_pred, glm_exp, n_bins=30, title="Calibration Plot GLM Model")
+    plot_calibration(rf_y_test, rf_y_pred, rf_exp, n_bins=30, title="Calibration Plot RF Model")
+    plot_lift(glm_y_test, glm_y_pred, glm_exp, n_bins=30, title="Lift Chart GLM Model")
+    plot_lift(rf_y_test, rf_y_pred, rf_exp, n_bins=30, title="Lift Chart RF Model")
 
 if __name__ == "__main__":
     main()
