@@ -27,7 +27,7 @@ def generate_comparison_table(glm_mpd: float, glm_d2: float, rf_mpd: float, rf_d
     )
     return markdown_table
 
-def plot_calibration(y_true_freq: pd.Series, y_pred_freq: pd.Series, exposure: float, n_bins: int = 50, title: str = "Calibration Plot"):
+def plot_calibration(y_true_freq: pd.Series, y_pred_freq: pd.Series, exposure: float, n_bins: int = 10, title: str = "Calibration Plot"):
     cal = pd.DataFrame(dict(y_true = y_true_freq, y_pred = y_pred_freq, exposure = exposure))
     cal["bin"] = pd.qcut(cal["y_pred"],q=n_bins,duplicates="drop")
 
@@ -59,6 +59,67 @@ def plot_calibration(y_true_freq: pd.Series, y_pred_freq: pd.Series, exposure: f
     plt.show()
 
 
+def plot_lift(
+    y_true_freq: pd.Series,
+    y_pred_freq: pd.Series,
+    exposure: pd.Series,
+    n_bins: int = 10,
+    title: str = "Lift chart",
+):
+    lift = pd.DataFrame(dict(y_true = y_true_freq, y_pred = y_pred_freq, exposure = exposure))
+
+    lift["bin"] = pd.qcut(lift["y_pred"],q=n_bins,duplicates="drop", labels=False)
+
+    lift["y_true_x_exposure"] = lift["y_true"] * lift["exposure"]
+    lift["y_pred_x_exposure"] = lift["y_pred"] * lift["exposure"]
+
+    grouped = (
+        lift.groupby("bin", observed=True)
+        .agg(
+            claims_true=("y_true_x_exposure", "sum"),
+            claims_pred=("y_pred_x_exposure", "sum"),
+            exposure=("exposure", "sum"),
+        )
+        .reset_index()
+    )
+
+    grouped["y_true"] = (
+            grouped["claims_true"] / grouped["exposure"]
+    )
+    grouped["y_pred"] = (
+            grouped["claims_pred"] / grouped["exposure"]
+    )
+    overall_frequency = (
+            grouped["claims_true"].sum() / grouped["exposure"].sum()
+    )
+    grouped["lift_true"] = (
+        grouped["y_true"] / overall_frequency
+    )
+    grouped["lift_pred"] = (
+            grouped["y_pred"] / overall_frequency
+    )
+
+    plt.figure()
+    plt.plot(
+        grouped["bin"],
+        grouped["lift_true"],
+        marker="o",
+        label="Observed lift"
+    )
+    plt.plot(
+        grouped["bin"],
+        grouped["lift_pred"],
+        marker="o",
+        label="Predicted lift"
+    )
+    plt.axhline(1.0, linestyle="--")
+
+    plt.xlabel("Prediction bin")
+    plt.ylabel("Lift vs. portfolio average")
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
 
 
 
@@ -75,8 +136,10 @@ def main():
     print("\n### Model Evaluation Results")
     print(comparison_table)
 
-    plot_calibration(glm_y_test, glm_y_pred, glm_exp, title="Calibration Plot GLM Model")
-    plot_calibration(rf_y_test, rf_y_pred, rf_exp, title="Calibration Plot RF Model")
+    plot_calibration(glm_y_test, glm_y_pred, glm_exp, n_bins=50, title="Calibration Plot GLM Model")
+    plot_calibration(rf_y_test, rf_y_pred, rf_exp, n_bins=50, title="Calibration Plot RF Model")
+    plot_lift(glm_y_test, glm_y_pred, glm_exp, n_bins=50, title="Lift Chart GLM Model")
+    plot_lift(rf_y_test, rf_y_pred, rf_exp, n_bins=50, title="Lift Chart RF Model")
 
 if __name__ == "__main__":
     main()
