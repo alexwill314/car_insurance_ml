@@ -34,8 +34,6 @@ For more info see https://github.com/dutangc/CASdatasets
 
 ## 5. Key Findings
 
-## Key Findings
-
 The Random Forest slightly outperforms the Poisson GLM baseline.
 
 | Model | Mean Poisson Deviance (MPD) | D-squared (D²) |
