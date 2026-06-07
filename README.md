@@ -27,17 +27,28 @@ For more info see https://github.com/dutangc/CASdatasets
 ## 4. Methodology
 
 - Exposure-adjusted exploratory data analysis
-- Claim frequency modeling using Poisson regression and Gradient Boosting
+- Claim frequency modeling using Poisson regression and Random Forest
 - Claim severity modeling using Gamma/log-transformed regression
 - Pure premium estimation
 - Calibration analysis by risk decile
-- Segment-level error analysis
-- Interactive Plotly dashboard
 
 ## 5. Key Findings
 
-To be added after the analysis.
+## Key Findings
+
+The Random Forest slightly outperforms the Poisson GLM baseline.
+
+| Model | Mean Poisson Deviance (MPD) | D-squared (D²) |
+| :--- | :---: | :---: |
+| Poisson GLM (Baseline) | 0.466361 | 0.039818 |
+| Random Forest (ML) | 0.457052 | 0.058983 |
+
+Both models show modest explanatory power, which is expected for claim frequency data because claims are sparse and highly random at the individual policy level.
+
+The Poisson GLM provides an interpretable actuarial baseline and accounts for different observation periods using an exposure offset. The Random Forest achieves a slightly lower Poisson deviance and higher D², suggesting that it captures some non-linear effects or interactions.
+
+Overall, the results show that machine learning can provide incremental improvement over a traditional GLM baseline, but the available features explain only a limited share of claim frequency variation.
 
 ## 6. Technologies
 
-Python, pandas, scikit-learn, Plotly, statsmodels, Jupyter
+Python, pandas, scikit-learn, statsmodels, Jupyter
