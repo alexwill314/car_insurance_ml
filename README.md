@@ -36,10 +36,10 @@ For more info see https://github.com/dutangc/CASdatasets
 
 The Random Forest slightly outperforms the Poisson GLM baseline.
 
-| Model | Mean Poisson Deviance (MPD) | D-squared (D²) |
-| :--- | :---: | :---: |
-| Poisson GLM (Baseline) | 0.466361 | 0.039818 |
-| Random Forest (ML) | 0.457052 | 0.058983 |
+| Model | Mean Poisson Deviance (MPD) | Deviance Score (D²) |
+| :--- | :---: |:-------------------:|
+| Poisson GLM (Baseline) | 0.466361 |      0.039818       |
+| Random Forest (ML) | 0.457052 |      0.058983       |
 
 Both models show modest explanatory power, which is expected for claim frequency data because claims are sparse and highly random at the individual policy level.
 
