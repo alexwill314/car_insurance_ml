@@ -45,6 +45,8 @@ Both models show modest explanatory power, which is expected for claim frequency
 
 The Poisson GLM provides an interpretable actuarial baseline and accounts for different observation periods using an exposure offset. The Random Forest achieves a slightly lower Poisson deviance and higher D², suggesting that it captures some non-linear effects or interactions.
 
+The Poisson GLM shows moderate overdispersion based on the Pearson dispersion statistic. This is common in claim frequency modeling and suggests that the Poisson assumption is somewhat restrictive. The model is still used as an interpretable baseline, while possible extensions include robust standard errors or a Negative Binomial GLM.
+
 Overall, the results show that machine learning can provide incremental improvement over a traditional GLM baseline, but the available features explain only a limited share of claim frequency variation.
 
 ## 6. Technologies

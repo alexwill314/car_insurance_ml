@@ -123,20 +123,34 @@ def plot_lift(
     plt.tight_layout()
     plt.show()
 
+def check_overdispersion(result):
+    pearson_dispersion = result.pearson_chi2 / result.df_resid
+
+    print(f"Pearson dispersion: {pearson_dispersion:.3f}")
+
+    if pearson_dispersion > 2:
+        print("Indication of substantial overdispersion.")
+    elif pearson_dispersion > 1.5:
+        print("Indication of moderate overdispersion.")
+    else:
+        print("No strong indication of overdispersion.")
 
 
 def main():
     print("Training Poisson GLM model...")
-    _, glm_y_test, glm_y_pred, glm_exp = train_glm_baseline()
+    glm_result, glm_y_test, glm_y_pred, glm_exp = train_glm_baseline()
     glm_mpd, glm_d2 = evaluate_predictions(glm_y_test, glm_y_pred, glm_exp)
 
     print("Training Random Forest model...")
-    _, rf_y_test, rf_y_pred, rf_exp = train_random_forest()
+    rf_model, rf_y_test, rf_y_pred, rf_exp = train_random_forest()
     rf_mpd, rf_d2 = evaluate_predictions(rf_y_test, rf_y_pred, rf_exp)
 
     comparison_table = generate_comparison_table(glm_mpd, glm_d2, rf_mpd, rf_d2)
     print("\n### Model Evaluation Results")
     print(comparison_table)
+
+    print("Check for Overdispersion in GLM Model:")
+    check_overdispersion(glm_result)
 
     plot_calibration(glm_y_test, glm_y_pred, glm_exp, n_bins=30, title="Calibration Plot GLM Model")
     plot_calibration(rf_y_test, rf_y_pred, rf_exp, n_bins=30, title="Calibration Plot RF Model")
